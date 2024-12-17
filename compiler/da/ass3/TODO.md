@@ -1,0 +1,4 @@
+- [x] Lex code to count no of constant
+- [ ] Lex code to find frequency of a given word in a file
+- [x] Lex code to implement simple calculator
+- [x] Lex code insert the line number

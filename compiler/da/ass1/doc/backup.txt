@@ -1,0 +1,315 @@
+#include <stdio.h>
+#include <string.h>
+
+enum type {
+	Identifier,
+	Delimiter,
+	Operator,
+	Keyword,
+};
+
+struct item {
+	char name[3];
+	enum type type;
+	int id;
+};
+
+struct item table[8];
+// point to next empty index in table
+int tp = 0;
+
+void print_table() {
+	printf("Symbol Table:\n");
+	for (int i = 0; i < tp; i++) {
+		printf("  Name: %s, Type: %d, Id: %d\n", table[i].name, table[i].type, table[i].id);
+	}
+}
+
+void delete_table_index(int index) {
+	for (int i = index; i < 8; i++) {
+		table[i] = table[i+1];
+	}
+	tp -= 1;
+}
+
+void search_table_id(int id) {
+	for (int i = 0; i < 8; i++) {
+		if (table[i].id == id) {
+			printf("  Name: %s, Type: %d, Id: %d\n", table[i].name, table[i].type, table[i].id);
+			return;
+		}
+	}	
+}
+
+void modify_table_id(int id, char item_name[3], enum type item_type) {
+	for (int i = 0; i < 8; i++) {
+		if (table[i].id == id) {
+			strcpy(table[i].name, item_name);
+			table[i].type = item_type;
+			return;
+		}
+	}	
+}
+
+char keywords[5][4] = {"int", "else", "for", "fn", "if"};
+char operators[2][2] = {"=", "+"};
+char delimeters[3][2] = {",", "//", ";"};
+
+int size = 14;
+char input[] = "int a, b = 10;";
+
+// if keyword -> 1
+// else -> 0
+int is_keyword(char keyword[]) {
+        for (int i = 0; i < 5; i++) {
+                int result = strcmp(keyword, keywords[i]);
+                if (result == 0) {
+                        return 1;
+                }
+        }
+        return 0;
+}
+
+
+// if operator -> 1
+// else -> 0
+int is_operator(char operator[]) {
+        for (int i = 0; i < 5; i++) {
+                int result = strcmp(operator, operators[i]);
+                if (result == 0) {
+                        return 1;
+                }
+        }
+        return 0;
+}
+
+
+// if delimiter -> 1
+// else -> 0
+int is_delimiter(char delimeter[]) {
+        for (int i = 0; i < 5; i++) {
+                int result = strcmp(delimeter, delimeters[i]);
+                if (result == 0) {
+                        return 1;
+                }
+        }
+        return 0;
+}
+
+// print char in given range for array: input
+void print_chars(int start, int end) {
+	for (int i = start; i < end; i++) {
+		printf("%c", input[i]);
+	}
+	printf("\n");
+
+}
+
+
+// remove given index from array: input
+void r_index(int index) {
+	if (index <= 0) {
+		return;
+	}
+	for (int i = index; i < size; i++) {
+		input[i] = input[i+1];
+	}
+}
+
+// remove whitespace from global scopce array: input
+// returns newsize
+void r_w() {
+	for (int i = 0; i < size; i++) {
+		if (input[i] == ' ') {
+			r_index(i);
+			size -= 1;
+		}
+	}	
+}
+
+void add_symbol(char item_name[3], enum type item_type) {
+	strcpy(table[tp].name, item_name);
+	table[tp].type = item_type;
+	table[tp].id = tp + 1;	
+
+	tp += 1;
+}
+
+void lexer() {
+	int pointer = 0;
+	char token[3];
+	int token_found = 0;
+	int index_prev = 0;
+
+	for (int j = 0; j < size; j++) {
+		// assume, max token size = 3
+		for (int i = 0; i < 3; i++) {
+			token[pointer] = input[j + i];
+			pointer += 1;
+
+			int result_is_keyword = is_keyword(token);
+			int result_is_delimiter = is_delimiter(token);
+			int result_is_operator = is_operator(token);
+
+			if  (result_is_keyword == 1) {
+				printf("  Keyword: ");
+				print_chars(j, j + pointer);
+				token_found = 1;
+				add_symbol(token, Keyword);
+				break;
+			} else if (result_is_delimiter == 1) {
+				printf("  Delimiter: ");
+				print_chars(j, j + pointer);
+				token_found = 1;
+				add_symbol(token, Delimiter);
+				break;
+			} else if (result_is_operator == 1) {
+				printf("  Operator: ");
+				print_chars(j, j + pointer);
+				token_found = 1;
+				add_symbol(token, Operator);
+				break;
+			}
+		}
+
+		if (token_found == 1) {
+			char tmp[3];
+			token_found = 0;
+			
+			if (index_prev != 0) {
+			// identifier
+			printf("  Identifier: ");
+			print_chars(index_prev, j);
+			}
+			int tmpp = 0;
+			for (int i = index_prev; i < j; i++) {
+				tmp[0] = input[i]; 
+				tmpp += 1;
+			}
+			add_symbol(tmp, Identifier);
+			index_prev = j + pointer;
+
+			j += pointer;
+		}
+
+		pointer = 0;
+		// reset token
+		for (int m = 0; m < 3; m++) {
+			token[m] = 0;
+		}
+	}
+}
+
+
+int main() {
+	printf("Input:\n  %s\n", input);
+
+	r_w();
+	printf("Tokens: \n");
+	lexer();
+	print_table();
+
+	printf("Table Func:\n");
+	search_table_id(3);
+	delete_table_index(2);
+	print_table();
+	return 0;
+}
+
+Next Ques:
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+struct item {
+	int label;
+	char symbol[3];
+	int address;
+
+	struct item *next;
+	struct item *prev;
+};
+
+
+void insert(struct item* tail, int label, char symbol[3], int address) {
+	if (tail -> next == NULL && tail -> prev == NULL) {
+		struct item *tmp = malloc(sizeof(struct item));
+		tmp -> label = label;
+		strcpy(tmp -> symbol, symbol);
+		tmp -> address = address;
+		tmp -> next = NULL;
+		tmp -> prev = NULL;
+
+		tail -> next = tmp;
+		tmp -> prev = tail;
+		tail = tmp;
+
+		return;
+	}
+	struct item *tmp = malloc(sizeof(struct item));
+	tmp -> label = label;
+	strcpy(tmp -> symbol, symbol);
+	tmp -> address = address;
+	tmp -> next = NULL;
+	tmp -> prev = NULL;
+
+	tail -> next = tmp;
+	tmp -> prev = tail;
+
+	tail = tmp;
+}
+
+void delete(struct item *ptr) {
+	if (ptr -> next == NULL) {
+		ptr -> prev -> next = NULL;
+		free(ptr);
+	} else {
+		ptr -> prev -> next = ptr -> next;
+		ptr -> next -> prev = ptr -> prev;
+	}	
+}
+
+void modify(struct item *ptr, int label, char symbol[3], int address) {
+	ptr -> label = label;
+	strcpy(ptr -> symbol, symbol);
+	ptr -> address = address;
+}
+
+struct item* search(struct item *head, int label) {
+	if (head -> next == NULL) {
+		return NULL;
+	} else {
+		struct item *ptr = head -> next;
+		while (ptr -> next != NULL) {
+			if (ptr -> label == label) {
+				return ptr;
+			}
+
+			ptr = ptr -> next;
+		}
+		if (ptr -> label == label) {
+			return ptr;
+		}
+	}
+	return NULL;
+}
+
+void display_node(struct item *ptr) {
+	printf("Label: %d, Symbol: %s, Address: %d\n", ptr -> label, ptr -> symbol, ptr -> address);
+	
+}
+
+int main() {
+	struct item *head = malloc(sizeof(struct item));
+	head -> next = NULL;
+	head -> prev = NULL;
+
+	struct item *tail = head;
+	insert(tail, 2, "abc", 2);
+	insert(tail, 2, "bca", 3);
+	insert(tail, 2, "cab", 4);
+
+	display_node(head -> next);
+
+	return 0;
+}

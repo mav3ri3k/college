@@ -1,0 +1,15 @@
+www.apurva.com
+www.google.com
+www.evilcorp.org
+www.mycountry.in
+www.goo_.com
+www.vit.ac.in
+
+www.$money.com
+sheets.google.com
+vtop.vit.ac
+google.com
+www.google.somelongtext
+www.google
+www.google?.com
+

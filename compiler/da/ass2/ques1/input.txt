@@ -1,0 +1,6 @@
+apurva.jpr@gmail.com
+apurva.jpr@yahoo.com
+valid@email.com
+
+invalid@emailcom
+.invliad@gmail.com

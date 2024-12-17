@@ -1,0 +1,12 @@
+/archieve
+**/.DS_Store
+**/.zig-cache/
+**/bin/
+**/target/
+**/*.out
+**/*.png
+**/*.jpeg
+**/*.jpg
+/network
+main
+/vit-ass
