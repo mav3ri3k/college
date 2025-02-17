@@ -77,6 +77,45 @@ $
 $
 
 == *ElGamal*
+
+1. Choose public numbers such that:
+    - $#sym.alpha, q$ are prime
+    - $#sym.alpha$ is primitive root of $q$
+$
+    #sym.alpha, q&\
+$
+
+2. A: Compute
+    - Private Key: $X#sub[A]$
+    - Public Key : ${q, #sym.alpha, Y#sub[A]}$
+$
+    X#sub[A] &| X#sub[A] #sym.in (1, q-1)\ 
+    Y#sub[A] &= #sym.alpha#super[X#sub[A]] "mod" q\ 
+$ 
+
+3. B
+    - Message: $M | M #sym.in [1, q-1]$
+    - Random : $k | k #sym.in [1, q-1]$
+
+4. Encrypt $(C#sub[1], C#sub[2])$:
+$
+    C#sub[1] &= #sym.alpha^k "mod" q\
+    C#sub[2] &= K M "mod" q
+$
+
+5. A: Decrpt
+$
+    K &= C#sub[1]^(X#sub[A]) "mod" q\
+    M &= C#sub[2]K^(-1) "mod" q\
+$
+
+#cblock[
+    If a message must be broken up into blocks and sent as a sequence of ­ encrypted
+blocks, a unique value of k should be used for each block. If k is used for more than
+one block, knowledge of one block M1 of the message enables the user to compute
+other blocks as follows. Let
+]
+
 == *Elliptic Curve cryptography*
 == Homomorphic Encryption and Secret Sharing
 == Key distribution and Key exchange protocols
@@ -98,7 +137,7 @@ $
 
 $
     A &= g^x "mod" n\
-    B &= g^y "mod"n\
+    B &= g^y "mod" n\
 $ 
 
 4. Generate Keys User side:
@@ -113,8 +152,15 @@ $
 
 = Module 4: Message Digest and Hash Functions
 == Requirements for Hash Functions
+A Hash Function $H$ accepts a variable length block of data $M$ as input and
+produces a fixed size result $h = H(M)$ referred to as a *hash value* or *hash code*.
+
+A *Cryptographic Hash Function* for which it is computationally infesible to find:
+1. $M$ which maps to a predefined $h$
+2. $(M#sub[1], M#sub[2])$ which map to same $h$
 == Security of Hash Functions
 == Message Digest (MD5)
 == Secure Hash Function (SHA)
+#image("./sha-512.png")
 == Birthday Attack
 == HMAC
