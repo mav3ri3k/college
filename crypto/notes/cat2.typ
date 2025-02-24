@@ -4,7 +4,7 @@
 #show: doc => assignment(
   title: "Notes",
   course: "Cryptography and Network Security",
-  // Se apenas um autor colocar , no final para indicar que é um array
+  // Se apenas um author colocar , no final para indicar que é um array
   author: "Apurva Mishra: 22BCE2791",
   date: "CAT - II",
   doc,
@@ -103,7 +103,7 @@ $
     C#sub[2] &= K M "mod" q
 $
 
-5. A: Decrpt
+5. A: Decrypt
 $
     K &= C#sub[1]^(X#sub[A]) "mod" q\
     M &= C#sub[2]K^(-1) "mod" q\
@@ -160,6 +160,85 @@ A *Cryptographic Hash Function* for which it is computationally infesible to fin
 2. $(M#sub[1], M#sub[2])$ which map to same $h$
 == Security of Hash Functions
 == Message Digest (MD5)
+*Setup*
+$
+"Input":& M\
+"Message Length":& 2^64 "bits" \
+"Output":& 128 "bits"\
+$
+
+*Steps*:
+1. *Padding*
+Padding bits $P$:
+$
+    P = 1 #sym.dot.c sum_(i)^n 0_(i) 
+$
+Padding is *always* added, even if:
+$
+    O = 512 #sym.dot.c x = M + 64 "bits" | x #sym.in [1, #sym.infinity) 
+$
+Examples: ${10, 100, 1000}$
+
+Output:
+$
+    O_(1) = M + P
+$
+
+2. *Append Length*
+
+$
+    L = "len"(M) | "expressed in 64 bits"
+$
+
+Then,
+
+$
+    O_(2) = O_(1) + L
+$
+
+Output:
+$
+    O_(2) =& O_(1) + L\
+    O_(2) =& M + P + L\
+$
+
+3. *Divide into 512 bit blocks*
+
+$
+    O_(3) &= sum_(i)^(n) a_(i) | "where len(a) == 512"\
+    O_(3) &= {a_(1), a_(2), . . , a_(n)}\
+$
+
+4. *Initialize Chaining Variable*
+
+Chaining variables: ${A, B, C, D}$ are initialised, each 32 bits.
+#align(center)[
+    #table(
+        columns: (auto, auto, auto, auto, auto),
+        stroke: 0.5pt,
+        [*A*], [01], [23], [45], [67],
+        [*B*], [89], [AB], [CD], [EF],
+        [*C*], [FE], [BC], [DA], [98],
+        [*D*], [76], [54], [32], [10],
+    )
+]
+
+5. *Process Block*
+There are *4* rounds.
+
+Let ${a, b, c, d} = {A, B, C, D}$
+
+Divide 512 bits in sub-blocks of 32 bits each (16 sub-blocks):
+$
+    a_(i) = sum_(j=1)^(16) b_(j) | "where len(b) == 32 bits"
+$
+
+Initialize constant _t_: [u32; 64]
+
+Then round function:
+$
+    a b c d` =  f_(r)(a b c d, {b_(1), .., b_(16)}, t)
+$
 == Secure Hash Function (SHA)
 #image("./sha-512.png")
 == Birthday Attack
