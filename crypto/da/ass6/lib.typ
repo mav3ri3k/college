@@ -82,7 +82,7 @@
     )[#code]
   ]
 
-  set text(font: "Times New Roman", fallback: false, size: 10pt)
+  set text(font: "JetBrainsMono NF", fallback: false, size: 12pt)
 
   // rounded images
   show image: it => block(
@@ -99,7 +99,7 @@ margin: 2cm,
   )
   // TODO: verificar se há necessidade de colocar espaçamento de 1.5
   set par(
-    first-line-indent: 0cm,
+    first-line-indent: 1.5cm,
     justify: true,
     leading: 0.65em,
     linebreaks: "optimized",
@@ -116,20 +116,19 @@ margin: 2cm,
     inset: (x: 2em, y: 1.3em),
   )[
     #align(center)[
-      #image("title.png", width: 30em)
-      #text(size: 15pt, weight: "semibold", fill: rgb("#383434"))[
+      #image("title.png", width: 35em)
+      #text(size: 17pt, weight: "semibold", fill: rgb("#383434"))[
         B.Tech. Winter Semester 2024-25\
         School Of Computer Science and Engineering\
         (SCOPE)\
       ]
       \
-      #text(weight: "bold", size: 20pt)[#title\ ]
-      // \
-      // #text(weight: "semibold", size: 20pt)[#course\ ]
+      #text(weight: "bold", size: 25pt)[#title\ ]
+      #text(weight: "semibold", size: 20pt)[#course\ ]
     ]
     \
     *#author*\
-    // *Date:* #date
+    *Date:* #date
 
 
   ]

@@ -6,22 +6,25 @@
   course: "Information Security",
   // Se apenas um autor colocar , no final para indicar que é um array
   author: "Apurva Mishra: 22BCE2791",
-  date: "23 February 2024",
+  date: "26 March 2025",
   doc,
 )
 
-= P2P Chat App
+= Chat App
 
 #cblock[
-A peer to peer chat application which is end to end
+A chat application which is end to end
 encrypted and does not require login to ensure complete user privacy\
 \
 *Code*: #link("https://github.com/mav3ri3k/p2p-chat")[https://github.com/mav3ri3k/p2p-chat]
 ]
 
-== Stack
-- *#link("https://tauri.app/")[Tauri]*: Framework for creating cross-platform applications with ui in javascript and logic in rust.
-- *#link("https://www.iroh.computer/")[Iroh]*: Library which helps orchestracte p2p communication. 
+== Stack / Technical Coverage
+- *Full Stack*: The project covers both frontend (UI, user interaction) and backend (networking, state management) development.
+- *Frontend Stack*: React, TypeScript, Vite, Deno - a modern web technology stack.
+- *Backend Stack*: Rust, Tokio (async runtime), iroh (P2P networking library based on QUIC).
+- *Integration Framework*: Tauri is used effectively to bridge the Rust backend and the web frontend, handling inter-process communication and packaging the application for desktop use.
+- *Networking Layer*: Utilizes QUIC via iroh and defines a simple application-layer protocol on top.
 
 == Data Flow Diagram
 
@@ -29,7 +32,26 @@ encrypted and does not require login to ensure complete user privacy\
 
 == Module Contributions
 Implementation of core backend logic and communication.\
+
+1. *Backend Core & Networking*:
+
+    - Implemented the core P2P connection logic using the iroh Rust library.
+    - Developed the node setup, binding, and connection establishment mechanisms for both creating ("hosting") and joining chat rooms via NodeTickets.
+    - Managed the asynchronous tasks for accepting connections, handling handshakes, and continuously reading incoming messages from the peer.
+    - Implemented the backend state management (ChatState) to hold the active connection's send stream.
+2. *Tauri Framework Integration*:
+    - Configured the Tauri application structure, including build settings (tauri.conf.json) and Rust dependencies (Cargo.toml).
+    - Defined and implemented the Tauri commands (create_chat_room, join_chat_room, send_message) to expose backend functionality to the frontend.
+    - Utilized Tauri's state management (tauri::State) to share the ChatState across command handlers.
+    - Implemented the event emission (app_handle.emit("new-message", ...)) from the backend to notify the frontend of incoming messages.
 \
+
+== Knowledge Gained
+
+- *Rust & Asynchronous Programming*: The backend is written in Rust, utilizing Tokio for asynchronous operations, which is essential for handling network I/O non-blockingly
+- *P2P Networking*: The project uses the iroh library for establishing peer-to-peer connections over QUIC.
+- *Tauri Framework*: Integrating a Rust backend with a web frontend (React/TypeScript) using Tauri which allows for cross-platform applications.
+- *Frontend Technologies*: Use of React with TypeScript, Vite for bundling, and managing dependencies, and Deno as javascript runtime.
 #link("https://github.com/mav3ri3k/p2p-chat/commits/master/")[Link to Github Commits]
 
 == Algorithm Description

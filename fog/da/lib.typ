@@ -116,20 +116,17 @@ margin: 2cm,
     inset: (x: 2em, y: 1.3em),
   )[
     #align(center)[
-      #image("title.png", width: 30em)
-      #text(size: 15pt, weight: "semibold", fill: rgb("#383434"))[
+      #image("title.png", width: 35em)
+      #text(size: 17pt, weight: "semibold", fill: rgb("#383434"))[
         B.Tech. Winter Semester 2024-25\
         School Of Computer Science and Engineering\
-        (SCOPE)\
       ]
       \
-      #text(weight: "bold", size: 20pt)[#title\ ]
-      // \
-      // #text(weight: "semibold", size: 20pt)[#course\ ]
+      #text(weight: "bold", size: 19pt)[#title\ ]
+      // #text(weight: "semibold", size: 15pt)[#course\ ]
     ]
-    \
     *#author*\
-    // *Date:* #date
+    *Date:* #date
 
 
   ]
