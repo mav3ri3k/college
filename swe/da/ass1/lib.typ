@@ -65,6 +65,7 @@
 
   show raw: code => if code.block [
     #show raw.line: line => {
+      set text(font: "JetBrainsMono NF", fallback: false, size: 11pt)
       box(width: radius)[
         #align(right)[
           #text(fill: gray)[#line.number]
@@ -75,6 +76,7 @@
     }
     #code
   ] else [
+    #set text(font: "JetBrainsMono NF", fallback: false, size: 11pt)
     #box(
       fill: rgb("#f2f4f7"),
       outset: (x: 2pt, y: 3pt),
@@ -82,7 +84,7 @@
     )[#code]
   ]
 
-  set text(font: "JetBrainsMono NF", fallback: false, size: 12pt)
+  set text(font: "Nebula Sans", fallback: false, size: 12pt)
 
   // rounded images
   show image: it => block(
@@ -99,7 +101,7 @@ margin: 2cm,
   )
   // TODO: verificar se há necessidade de colocar espaçamento de 1.5
   set par(
-    first-line-indent: 1.5cm,
+    first-line-indent: 0cm,
     justify: true,
     leading: 0.65em,
     linebreaks: "optimized",
