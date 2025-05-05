@@ -1,0 +1,3 @@
+- [ ] Fermat's Theorm
+- [ ] Euler' Theorem (Case i and ii)
+- [ ] Euclidian Algorithm

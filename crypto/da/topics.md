@@ -1,3 +1,0 @@
-rcs
-
-- stream generation

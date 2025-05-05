@@ -1,0 +1,212 @@
+# CRC
+```
+unsigned int calculateCRC(unsigned int data, unsigned int polynomial, int data_length, int polynomial_length) {
+    unsigned int crc = data << (polynomial_length - 1);
+
+    for (int i = data_length - 1; i >= 0; i--) {
+        if ((crc >> (polynomial_length - 1)) & 1) {
+            crc = (crc << 1) ^ polynomial;
+        } else {
+            crc <<= 1;
+        }
+    }
+
+    return crc;
+}
+```
+
+# Socket Programming
+
+Algo for server
+MAX_BUFFER_SIZE = 10 // Buffer size for out-of-order frames
+socket = create_socket()
+expected_seq_num = 0 received_frames = [] order)
+ack_buffer = [] // Expected sequence number
+// Buffer for received frames (including out-of-
+// Buffer to store ACKs to send
+bind_and_listen(socket)
+while (not all_frames_received()):
+frame = receive_frame(socket)
+if frame.seq_num == expected_seq_num:
+send_ack(socket, frame.seq_num)
+process_frame(frame)
+expected_seq_num += 1
+while frame_buffer_contains(expected_seq_num):
+process_frame(received_frames[expected_seq_num])
+expected_seq_num += 1
+else if frame.seq_num > expected_seq_num:
+buffer_frame(received_frames, frame)
+send_ack(socket, frame.seq_num)
+else:
+send_ack(socket, frame.seq_num)
+close_socket(socket)
+Algo for client
+MAX_WINDOW_SIZE = 4 TIMEOUT = 5000 // Maximum window size
+// Timeout for waiting ACK in milliseconds
+socket = create_socket()
+window_start = 0 // The first frame in the sliding window
+window_end = window_start + MAX_WINDOW_SIZE - 1
+next_seq_num = 0 // Next sequence number to send
+ack_received = [] // Acknowledgment array for received ACKs
+2
+connect_to_server(socket)
+frames = get_data_in_frames()
+while (not all_frames_acked(frames)):
+for i = window_start to window_end:
+if i < len(frames) and not ack_received[i]:
+send_frame(socket, frames[i], i)
+socket.set_timeout(TIMEOUT)
+try:
+ack = receive_ack(socket)
+if ack is valid and within window:
+ack_received[ack.seq_num] = true
+// Move window
+while ack_received[window_start]:
+window_start += 1
+window_end = window_start + MAX_WINDOW_SIZE - 1
+else:
+continue
+except TimeoutException:
+for i = window_start to window_end:
+if i < len(frames) and not ack_received[i]:
+resend_frame(socket, frames[i], i)
+close_socket(socket)
+Codes
+server.c
+#include <arpa/inet.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#define PORT 8080
+#define BUFFER_SIZE 1024
+#define CRC_POLY 0x8005
+// Function to compute CRC-16
+unsigned short crc16(const unsigned char *data, size_t length) {
+unsigned short crc = 0;
+while (length--) {
+crc ^= (*data++ << 8);
+for (int i = 0; i < 8; i++) {
+crc = (crc & 0x8000) ? (crc << 1) ^ CRC_POLY : (crc << 1);
+3
+}
+}
+return crc;
+}
+int main() {
+int server_fd, new_socket;
+struct sockaddr_in address;
+int addrlen = sizeof(address);
+char buffer[BUFFER_SIZE] = {0};
+if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
+perror("socket failed");
+exit(EXIT_FAILURE);
+}
+address.sin_family = AF_INET;
+address.sin_addr.s_addr = INADDR_ANY;
+address.sin_port = htons(PORT);
+if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
+perror("bind failed");
+close(server_fd);
+exit(EXIT_FAILURE);
+}
+if (listen(server_fd, 3) < 0) {
+perror("listen");
+close(server_fd);
+exit(EXIT_FAILURE);
+}
+printf("Server is listening on port %d\n"
+, PORT);
+if ((new_socket = accept(server_fd, (struct sockaddr *)&address,
+(socklen_t *)&addrlen)) < 0) {
+perror("accept");
+close(server_fd);
+exit(EXIT_FAILURE);
+}
+int bytes_read = read(new_socket, buffer, BUFFER_SIZE);
+unsigned short received_crc =
+*(unsigned short *)(buffer + bytes_read - sizeof(unsigned short));
+buffer[bytes_read - sizeof(unsigned short)] =
+'\0'; // Null-terminate the message
+printf("Message received: %s\n"
+, buffer);
+4
+unsigned short calculated_crc =
+crc16((unsigned char *)buffer, bytes_read - sizeof(unsigned short));
+if (received_crc == calculated_crc) {
+char *response =
+"Message received with valid CRC";
+send(new_socket, response, strlen(response), 0);
+printf("Response sent: %s\n"
+, response);
+} else {
+char *response =
+"Message received with invalid CRC";
+send(new_socket, response, strlen(response), 0);
+printf("Response sent: %s\n"
+, response);
+}
+close(server_fd);
+return 0;
+}
+client.c
+#include <arpa/inet.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#define PORT 8080
+#define BUFFER_SIZE 1024
+#define CRC_POLY 0x8005 // CRC-16 polynomial
+unsigned short crc16(const unsigned char *data, size_t length) {
+unsigned short crc = 0;
+while (length--) {
+crc ^= (*data++ << 8);
+for (int i = 0; i < 8; i++) {
+crc = (crc & 0x8000) ? (crc << 1) ^ CRC_POLY : (crc << 1);
+}
+}
+return crc;
+}
+int main() {
+int sock = 0;
+struct sockaddr_in serv_addr;
+char message[BUFFER_SIZE] =
+char buffer[BUFFER_SIZE] = {0};
+"Hello from client";
+5
+unsigned short crc = crc16((unsigned char *)message, strlen(message));
+size_t message_len = strlen(message);
+char final_message[BUFFER_SIZE] = {0};
+memcpy(final_message, message, message_len);
+// Append the CRC to the message
+memcpy(final_message + message_len, &crc, sizeof(unsigned short));
+message_len += sizeof(unsigned short);
+if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+printf("\n Socket creation error \n");
+return -1;
+}
+// Setting up the server address structure
+serv_addr.sin_family = AF_INET;
+serv_addr.sin_port = htons(PORT);
+if (inet_pton(AF_INET,
+"127.0.0.1"
+, &serv_addr.sin_addr) <= 0) {
+printf("\nInvalid address/ Address not supported \n");
+return -1;
+}
+// Connecting to the server
+if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
+printf("\nConnection Failed \n");
+return -1;
+}
+send(sock, final_message, message_len, 0);
+printf("Message sent with CRC: %s\n"
+, message);
+read(sock, buffer, BUFFER_SIZE);
+printf("Response from server: %s\n"
+, buffer);
+// Closing the socket
+close(sock);
+return 0;
+}
