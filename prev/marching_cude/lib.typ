@@ -2,9 +2,9 @@
   https://github.com/catppuccin/catppuccin/blob/main/docs/style-guide.md
 */
 
-#let color_deg = 290deg
+#let color_deg = 90deg
 #let primary = oklch(50%, 0.22, color_deg)
-#let surface0 = oklch(94%, 0.015, color_deg)
+#let surface0 = oklch(94%, 0.04, color_deg)
 #let base = oklch(98%, 0.01, color_deg)
 
 // automatically keep track of question number
@@ -101,6 +101,30 @@
   ]
 }
 
+#let figure-card(ctitle, content) = {
+    block(
+    breakable: false,
+    width: 100%,
+  )[
+    #align(center, [
+      #content
+      #block(
+        breakable: false,
+        radius: radius,
+        fill: surface0,
+        inset: (x: 1em, y: 1em),
+      )[#ctitle]
+      ]
+    )
+  ]
+}
+
+#let text-card(csize, items) = {
+  set text(size: csize)
+  items
+  set text(size: 15pt)
+}
+
 #let image-card(ctitle, path) = {
   show image: img => block(
     radius: radius,
@@ -111,9 +135,9 @@
     breakable: false,
     width: 100%,
   )[
-    #image(path)
-
     #align(center, [
+      #image(path)
+
       #block(
         breakable: false,
         radius: radius,
@@ -168,13 +192,16 @@
   )[#img]
 
   set page(fill: base)
-  set text(font: "Nebula Sans", fallback: false, size: 12pt)
+  set text(font: "Nebula Sans", fallback: false, size: 15pt)
 
   set document(title: title, author: author)
+  let weight = 50pt
   set page(
-    numbering: "1",
+    width: weight * 9,
+    height: weight * 16,
     paper: "a4",
-margin: 2cm,
+  margin: 2cm,
+  flipped: true,
     //margin: (top: 1cm, bottom: 1cm, left: 1cm, right: 1cm),
   )
   // TODO: verificar se há necessidade de colocar espaçamento de 1.5
@@ -195,20 +222,16 @@ margin: 2cm,
     width: 100%,
     inset: (x: 2em, y: 1.3em),
   )[
-    #align(center)[
-      #image("title.png", width: 35em)
-      #text(size: 17pt, weight: "semibold", fill: rgb("#383434"))[
-        B.Tech. Fall Semester 2025-26\
-        School Of Computer Science and Engineering\
-        (SCOPE)\
-      ]
+    #align(center, text(font: "Vollkorn", size: 20pt)[
+      #image("title.png", width: 6em)
       \
-      #text(weight: "bold", size: 25pt)[#title\ ]
-      #text(weight: "semibold", size: 20pt)[#course\ ]
-    ]
+      #text(weight: "bold", size: 30pt)[#title\ ]
+    
     \
-    *#author*\
-    *Date:* #date
+    #align(center,text(size: 20pt, font: "Nebula Sans")[*#author*\
+    2022BCSE061
+    ])
+    ])
 
 
   ]
@@ -224,7 +247,7 @@ margin: 2cm,
   }
 
   set text(primary)
-  outline(depth: 2, title: text(black)[Contents])
+  //outline(depth: 2, title: text(black)[Contents])
   set text(black)
 
   pagebreak()
