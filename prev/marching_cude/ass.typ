@@ -509,6 +509,24 @@ card("filled")[
 ))
 #pagebreak()
 
+#set text(size: 10pt)
+#align(center + horizon,
+grid(
+  align: center + horizon,
+  columns: (auto, auto, auto),
+  column-gutter: 2em,
+  row-gutter: 2em,
+  image("./1.png"),
+  image("./2.png"),
+  image("./3.png"),
+  image("./4.png"),
+  image("./5.png"),
+  image("./6.png"),
+)
+)
+#set text(size: 15pt)
+#pagebreak()
+
 #text-card(tsize)[
 = Implementation Details
 \

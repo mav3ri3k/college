@@ -1,0 +1,7 @@
+**/*.parquet
+**/*.npz
+
+__pycache__/
+.aim/
+uv.lock
+mnist/
