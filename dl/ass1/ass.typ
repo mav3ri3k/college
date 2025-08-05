@@ -384,8 +384,8 @@ image-card("Mnist trained in jax with sgd", "q4sgd.png"),
 image-card("Mnist trained in jax with adam", "q4adam.png"),
 )
 #align(center,[
-#image-card("Accuracy", "q4g1.png"),
-#image-card("Trainnig Time", "q4g2.png"),
+#image-card("Accuracy", "q4g1.png")
+#image-card("Trainnig Time", "q4g2.png")
 ])
 
 #card("outlined")[
